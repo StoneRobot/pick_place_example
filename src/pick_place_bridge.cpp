@@ -45,6 +45,7 @@ move_group{group}
     place_poses.push_back(place_pose1);
     place_poses.push_back(place_pose2);
     place_poses.push_back(place_pose3);
+    // initMotionPlanning();
     ROS_INFO("init_over");
 }
 
@@ -96,15 +97,15 @@ void PickPlaceBridge::pick(geometry_msgs::Pose pose, int pre_vec[], int back_vec
   grasps[0].pre_grasp_approach.direction.vector.x = pre_vec[0];
   grasps[0].pre_grasp_approach.direction.vector.y = pre_vec[1];
   grasps[0].pre_grasp_approach.direction.vector.z = pre_vec[2];
-  grasps[0].pre_grasp_approach.min_distance = 0.01;
-  grasps[0].pre_grasp_approach.desired_distance = 0.215;
+  grasps[0].pre_grasp_approach.min_distance = 0.015;
+  grasps[0].pre_grasp_approach.desired_distance = 1.0;
   // 撤退方向
   grasps[0].post_grasp_retreat.direction.header.frame_id = "base_link";
   grasps[0].post_grasp_retreat.direction.vector.x = back_vec[0];
   grasps[0].post_grasp_retreat.direction.vector.y = back_vec[1];
   grasps[0].post_grasp_retreat.direction.vector.z = back_vec[2];
-  grasps[0].post_grasp_retreat.min_distance = 0.1;
-  grasps[0].post_grasp_retreat.desired_distance = 0.25;
+  grasps[0].post_grasp_retreat.min_distance = 0.015;
+  grasps[0].post_grasp_retreat.desired_distance = 1.0;
   // 模拟关闭夹爪
   closedGripper(grasps[0].grasp_posture);
   // 动作
@@ -136,14 +137,14 @@ void PickPlaceBridge::place(geometry_msgs::Pose pose, int pre_vec[], int back_ve
   place_location[0].pre_place_approach.direction.vector.y = pre_vec[1];
   place_location[0].pre_place_approach.direction.vector.z = pre_vec[2];
   place_location[0].pre_place_approach.min_distance = 0.015;
-  place_location[0].pre_place_approach.desired_distance = 0.215;
+  place_location[0].pre_place_approach.desired_distance = 1.0;
   // 撤退方向
   place_location[0].post_place_retreat.direction.header.frame_id = "base_link";
   place_location[0].post_place_retreat.direction.vector.x = back_vec[0];
   place_location[0].post_place_retreat.direction.vector.y = back_vec[1];
   place_location[0].post_place_retreat.direction.vector.z = back_vec[2];
   place_location[0].post_place_retreat.min_distance = 0.015;
-  place_location[0].post_place_retreat.desired_distance = 0.25;
+  place_location[0].post_place_retreat.desired_distance = 1.0;
   // 模拟打开夹爪
   openGripper(place_location[0].post_place_posture);
   // 抓取动作
@@ -263,6 +264,70 @@ void PickPlaceBridge::CartesianPath(geometry_msgs::Pose pose)
     move_group.execute(my_plan);
 }
 
+// void PickPlaceBridge::initMotionPlanning()
+// {
+//     const std::string PLANNING_GROUP = "arm";
+//     robot_model_loader::RobotModelLoader robot_model_loader("robot_description");
+//     robot_model::RobotModelPtr robot_model = robot_model_loader.getModel();
+//     /* Create a RobotState and JointModelGroup to keep track of the current robot pose and planning group*/
+//     robot_state::RobotStatePtr robot_state(new robot_state::RobotState(robot_model));
+//     const robot_state::JointModelGroup* joint_model_group = robot_state->getJointModelGroup(PLANNING_GROUP);
+//     // // 使用 RobotModel ,我们可以构造一个 PlanningScene 维护状态的世界(包括机器人)。
+//     planning_scene::PlanningScenePtr planning_scene(new planning_scene::PlanningScene(robot_model));
+//     // planning_scene(new planning_scene::PlanningScene(robot_model));
+//     planning_scene_ptr = planning_scene;
+//     // 构造一个加载程序来按名称加载规划器器。 注意,我们在这里使用ROS pluginlib库。
+//     boost::scoped_ptr<pluginlib::ClassLoader<planning_interface::PlannerManager>> planner_plugin_loader;
+//     // planning_interface::PlannerManagerPtr planner_instance;
+//     std::string planner_plugin_name;
+//     // 我们将获取要从 ROS 参数服务器加载的规划插件的名称，然后加载规划器以确保捕获所有异常。
+//     if (!nh.getParam("planning_plugin", planner_plugin_name))
+//     ROS_FATAL_STREAM("Could not find planner plugin name");
+//     try
+//     {
+//     // 规划器插件加载器
+//         planner_plugin_loader.reset(new pluginlib::ClassLoader<planning_interface::PlannerManager>(
+//         "moveit_core", "planning_interface::PlannerManager"));
+//     }
+//     catch (pluginlib::PluginlibException& ex)
+//     {
+//         ROS_FATAL_STREAM("Exception while creating planning plugin loader " << ex.what());
+//     }
+//     try
+//     {
+//     // 实例化 创建非托管实例
+//     planner_instance.reset(planner_plugin_loader->createUnmanagedInstance(planner_plugin_name));
+//     if (!planner_instance->initialize(robot_model, nh.getNamespace()))
+//         ROS_FATAL_STREAM("Could not initialize planner instance");
+//     ROS_INFO_STREAM("Using planning interface '" << planner_instance->getDescription() << "'");
+//     }
+//     catch (pluginlib::PluginlibException& ex)
+//     {
+//         const std::vector<std::string>& classes = planner_plugin_loader->getDeclaredClasses();
+//         std::stringstream ss;
+//         for (std::size_t i = 0; i < classes.size(); ++i)
+//             ss << classes[i] << " ";
+//         ROS_ERROR_STREAM("Exception while loading planner '" << planner_plugin_name << "': " << ex.what() << std::endl
+//                                     << "Available plugins: " << ss.str());
+//     }
+
+
+// }
+
+// void PickPlaceBridge::actionMotionPlanning()
+// {
+//     planning_interface::MotionPlanRequest req;
+//     planning_interface::MotionPlanResponse res;
+//     moveit_msgs::MotionPlanResponse response;
+//     planning_interface::PlanningContextPtr context = planner_instance->getPlanningContext(planning_scene_ptr, req, res.error_code_);
+//     res.getMessage(response);
+//     // moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+//     my_plan.trajectory_ = response.trajectory;
+//     move_group.execute(my_plan);
+// }
+
+
+
 void PickPlaceBridge::objectCallback(const hirop_msgs::ObjectArray::ConstPtr& msg)
 {
     geometry_msgs::Pose pose;
@@ -296,10 +361,12 @@ void PickPlaceBridge::objectCallback(const hirop_msgs::ObjectArray::ConstPtr& ms
         if(intent == 0)
             this->CartesianPath(pose);
         pick(pose, pick_pre_vec, pick_back_vec);
+        
         ros::WallDuration(1.0).sleep();
         // 测试
         nh.getParam("/pick_place/target", target);
         place(place_poses[target], place_pre_vec, place_back_vec);
+
         move_group.setNamedTarget("home");
         move_group.move();
     }

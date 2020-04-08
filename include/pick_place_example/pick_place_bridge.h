@@ -8,6 +8,18 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <geometry_msgs/Pose.h>
 
+#include <pluginlib/class_loader.h>
+
+// MoveIt!
+// #include <moveit/robot_model_loader/robot_model_loader.h>
+// #include <moveit/planning_interface/planning_interface.h>
+// #include <moveit/planning_scene/planning_scene.h>
+// #include <moveit/kinematic_constraints/utils.h>
+// // #include <moveit_msgs/DisplayTrajectory.h>
+// #include <moveit_msgs/PlanningScene.h>
+// // #include <moveit_visual_tools/moveit_visual_tools.h>
+// #include <boost/scoped_ptr.hpp>
+
 #include <vector>
 
 #include "hirop_msgs/Pick.h"
@@ -36,6 +48,8 @@ private:
     void objectCallback(const hirop_msgs::ObjectArray::ConstPtr& msg);
     void actionDataCallback(const std_msgs::Int32MultiArray::ConstPtr &msg);
     void CartesianPath(geometry_msgs::Pose pose);
+    // void initMotionPlanning();
+    // void actionMotionPlanning();
 
     ros::NodeHandle& nh;
     moveit::planning_interface::MoveGroupInterface& move_group;
@@ -56,4 +70,7 @@ private:
     geometry_msgs::Pose place_pose2;
     geometry_msgs::Pose place_pose3;
     std::vector<geometry_msgs::Pose> place_poses;
+
+    // planning_interface::PlannerManagerPtr planner_instance;
+    // planning_scene::PlanningScenePtr planning_scene_ptr;
 };
