@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="pick_place_example" type="gripper_controller" name="gripper_controller" output="screen">
+        <param name="group" type="str" value="arm" />
+        <param name="open_controller" type="bool" value="true" />
+    </node>
+</launch>

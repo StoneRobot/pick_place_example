@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="pick_place_example" type="pick_place" name="pick_place" output="screen">
+        <param name="group" type="str" value="arm" />
+        <param name="intent" type="int" value="0" />
+        <param name="target" type="int" value="0" />
+    </node>
+</launch>
