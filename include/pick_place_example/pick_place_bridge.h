@@ -24,6 +24,7 @@
 
 #include "hirop_msgs/Pick.h"
 #include "hirop_msgs/Place.h"
+#include "hirop_msgs/RemoveObject.h"
 #include "hirop_msgs/ShowObject.h"
 #include "hirop_msgs/listActuator.h"
 #include "hirop_msgs/listGenerator.h"
@@ -41,15 +42,15 @@ public:
 private:
     void openGripper(trajectory_msgs::JointTrajectory& posture);
     void closedGripper(trajectory_msgs::JointTrajectory& posture);
-    void pick(geometry_msgs::Pose pose, int pre_vec[], int back_vec[]);
-    void place(geometry_msgs::Pose pose, int pre_vec[], int back_vec[]);
+    void pick(geometry_msgs::Pose pose, float pre_vec[], float back_vec[]);
+    void place(geometry_msgs::Pose pose, float pre_vec[], float back_vec[]);
     bool setGenActuator();
+    void rmObject();
     void showObject(geometry_msgs::Pose pose);
     void objectCallback(const hirop_msgs::ObjectArray::ConstPtr& msg);
     void actionDataCallback(const std_msgs::Int32MultiArray::ConstPtr &msg);
     void CartesianPath(geometry_msgs::Pose pose);
-    // void initMotionPlanning();
-    // void actionMotionPlanning();
+
 
     ros::NodeHandle& nh;
     moveit::planning_interface::MoveGroupInterface& move_group;
@@ -58,6 +59,7 @@ private:
     ros::ServiceClient set_gen_actuator_client;
     ros::ServiceClient list_actuator_client;
     ros::ServiceClient show_object_client;
+    ros::ServiceClient remove_object_client;
     ros::ServiceClient detection_client;
     ros::Publisher pick_pose_pub;
     ros::Publisher place_pose_pub;
@@ -71,6 +73,5 @@ private:
     geometry_msgs::Pose place_pose3;
     std::vector<geometry_msgs::Pose> place_poses;
 
-    // planning_interface::PlannerManagerPtr planner_instance;
-    // planning_scene::PlanningScenePtr planning_scene_ptr;
+
 };
