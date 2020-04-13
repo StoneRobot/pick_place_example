@@ -55,93 +55,95 @@ move_group{group}
 
 void PickPlaceBridge::openGripper(trajectory_msgs::JointTrajectory& posture)
 {
-  posture.joint_names.resize(2);
-  posture.joint_names[0] = "left_finger_1_joint";
-  posture.joint_names[1] = "right_finger_1_joint";
-  posture.points.resize(1);
-  posture.points[0].positions.resize(2);
-  posture.points[0].positions[0] = 0.6;
-  posture.points[0].positions[1] = -0.6;  
-  posture.points[0].time_from_start = ros::Duration(0.5);
+    posture.joint_names.resize(2);
+    posture.joint_names[0] = "left_finger_1_joint";
+    posture.joint_names[1] = "right_finger_1_joint";
+    posture.points.resize(1);
+    posture.points[0].positions.resize(2);
+    posture.points[0].positions[0] = 0.6;
+    posture.points[0].positions[1] = -0.6;  
+    posture.points[0].time_from_start = ros::Duration(0.5);
 }
 
 void PickPlaceBridge::closedGripper(trajectory_msgs::JointTrajectory& posture)
 {
-  posture.joint_names.resize(2);
-  posture.joint_names[0] = "left_finger_1_joint";
-  posture.joint_names[1] = "right_finger_1_joint";
-  posture.points.resize(1);
-  posture.points[0].positions.resize(2);
-  posture.points[0].positions[0] = 0;
-  posture.points[0].positions[1] = 0;  
-  posture.points[0].time_from_start = ros::Duration(0.5);
+    posture.joint_names.resize(2);
+    posture.joint_names[0] = "left_finger_1_joint";
+    posture.joint_names[1] = "right_finger_1_joint";
+    posture.points.resize(1);
+    posture.points[0].positions.resize(2);
+    posture.points[0].positions[0] = 0;
+    posture.points[0].positions[1] = 0;  
+    posture.points[0].time_from_start = ros::Duration(0.5);
 
 }
 
-void PickPlaceBridge::pick(geometry_msgs::Pose pose, float pre_vec[], float back_vec[])
+moveit_msgs::MoveItErrorCodes PickPlaceBridge::pick(geometry_msgs::Pose pose, float pre_vec[], float back_vec[])
 {
-  std::vector<moveit_msgs::Grasp> grasps;
-  grasps.resize(1);
-  // 抓取姿态
-  grasps[0].grasp_pose.header.frame_id = "base_link";
-  // tf2::Quaternion orientation;
-  // orientation.setRPY(0, 0, -M_PI / 2);
-  // grasps[0].grasp_pose.pose.orientation = tf2::toMsg(orientation);
-  grasps[0].grasp_pose.pose.orientation.x = pose.orientation.x;
-  grasps[0].grasp_pose.pose.orientation.y = pose.orientation.y;
-  grasps[0].grasp_pose.pose.orientation.z = pose.orientation.z;
-  grasps[0].grasp_pose.pose.orientation.w = pose.orientation.w;
-  grasps[0].grasp_pose.pose.position.x = pose.position.x;
-  grasps[0].grasp_pose.pose.position.y = pose.position.y;
-  grasps[0].grasp_pose.pose.position.z = pose.position.z;
-  // 发送pick的位置信息
-  pick_pose_pub.publish(grasps[0].grasp_pose.pose);
-  // 抓取方向
-  grasps[0].pre_grasp_approach.direction.header.frame_id = "base_link";
-  grasps[0].pre_grasp_approach.direction.vector.x = pre_vec[0];
-  grasps[0].pre_grasp_approach.direction.vector.y = pre_vec[1];
-  grasps[0].pre_grasp_approach.direction.vector.z = pre_vec[2];
-  grasps[0].pre_grasp_approach.min_distance = 0.015;
-  grasps[0].pre_grasp_approach.desired_distance = 1.0;
-  // 撤退方向
-  grasps[0].post_grasp_retreat.direction.header.frame_id = "base_link";
-  grasps[0].post_grasp_retreat.direction.vector.x = back_vec[0];
-  grasps[0].post_grasp_retreat.direction.vector.y = back_vec[1];
-  grasps[0].post_grasp_retreat.direction.vector.z = back_vec[2];
-  grasps[0].post_grasp_retreat.min_distance = 0.015;
-  grasps[0].post_grasp_retreat.desired_distance = 1.0;
-  // 模拟关闭夹爪
-  closedGripper(grasps[0].grasp_posture);
-  // 动作
-  move_group.pick("object", grasps);
+    std::vector<moveit_msgs::Grasp> grasps;
+    grasps.resize(1);
+    grasp_pose[0].pre_grasp_posture.header.frame
+    // 抓取姿态
+    grasps[0].grasp_pose.header.frame_id = "base_link";
+    // tf2::Quaternion orientation;
+    // orientation.setRPY(0, 0, -M_PI / 2);
+    // grasps[0].grasp_pose.pose.orientation = tf2::toMsg(orientation);
+    grasps[0].grasp_pose.pose.orientation.x = pose.orientation.x;
+    grasps[0].grasp_pose.pose.orientation.y = pose.orientation.y;
+    grasps[0].grasp_pose.pose.orientation.z = pose.orientation.z;
+    grasps[0].grasp_pose.pose.orientation.w = pose.orientation.w;
+    grasps[0].grasp_pose.pose.position.x = pose.position.x;
+    grasps[0].grasp_pose.pose.position.y = pose.position.y;
+    grasps[0].grasp_pose.pose.position.z = pose.position.z;
+    // 发送pick的位置信息
+    pick_pose_pub.publish(grasps[0].grasp_pose.pose);
+    // 抓取方向
+    grasps[0].pre_grasp_approach.direction.header.frame_id = "base_link";
+    grasps[0].pre_grasp_approach.direction.vector.x = pre_vec[0];
+    grasps[0].pre_grasp_approach.direction.vector.y = pre_vec[1];
+    grasps[0].pre_grasp_approach.direction.vector.z = pre_vec[2];
+    grasps[0].pre_grasp_approach.min_distance = 0.015;
+    grasps[0].pre_grasp_approach.desired_distance = 0.05;
+    // 撤退方向
+    grasps[0].post_grasp_retreat.direction.header.frame_id = "base_link";
+    grasps[0].post_grasp_retreat.direction.vector.x = back_vec[0];
+    grasps[0].post_grasp_retreat.direction.vector.y = back_vec[1];
+    grasps[0].post_grasp_retreat.direction.vector.z = back_vec[2];
+    grasps[0].post_grasp_retreat.min_distance = 0.015;
+    grasps[0].post_grasp_retreat.desired_distance = 0.05;
+    // 模拟关闭夹爪
+    closedGripper(grasps[0].grasp_posture);
+    // 动作
+
+    return move_group.pick("object", grasps);
 }
 
-void PickPlaceBridge::place(geometry_msgs::Pose pose, float pre_vec[], float back_vec[])
+moveit_msgs::MoveItErrorCodes PickPlaceBridge::place(geometry_msgs::Pose pose, float pre_vec[], float back_vec[])
 {
 
-  std::vector<moveit_msgs::PlaceLocation> place_location;
-  place_location.resize(1);
-  // 抓取位置
-  place_location[0].place_pose.header.frame_id = "base_link";
-  // tf2::Quaternion orientation;
-  // orientation.setRPY(0, 0, 0);
-  // place_location[0].place_pose.pose.orientation = tf2::toMsg(orientation);
-  place_location[0].place_pose.pose.orientation.x = pose.orientation.x;
-  place_location[0].place_pose.pose.orientation.y = pose.orientation.y;
-  place_location[0].place_pose.pose.orientation.z = pose.orientation.z;
-  place_location[0].place_pose.pose.orientation.w = pose.orientation.w;
-  place_location[0].place_pose.pose.position.x = pose.position.x;
-  place_location[0].place_pose.pose.position.y = pose.position.y;
-  place_location[0].place_pose.pose.position.z = pose.position.z;
-  // 发送放置的位置信息
-  place_pose_pub.publish(place_location[0].place_pose.pose);
-  // 放置方向
-  place_location[0].pre_place_approach.direction.header.frame_id = "base_link";
+    std::vector<moveit_msgs::PlaceLocation> place_location;
+    place_location.resize(1);
+    // 抓取位置
+    place_location[0].place_pose.header.frame_id = "base_link";
+    // tf2::Quaternion orientation;
+    // orientation.setRPY(0, 0, 0);
+    // place_location[0].place_pose.pose.orientation = tf2::toMsg(orientation);
+    place_location[0].place_pose.pose.orientation.x = pose.orientation.x;
+    place_location[0].place_pose.pose.orientation.y = pose.orientation.y;
+    place_location[0].place_pose.pose.orientation.z = pose.orientation.z;
+    place_location[0].place_pose.pose.orientation.w = pose.orientation.w;
+    place_location[0].place_pose.pose.position.x = pose.position.x;
+    place_location[0].place_pose.pose.position.y = pose.position.y;
+    place_location[0].place_pose.pose.position.z = pose.position.z;
+    // 发送放置的位置信息
+    place_pose_pub.publish(place_location[0].place_pose.pose);
+    // 放置方向
+    place_location[0].pre_place_approach.direction.header.frame_id = "base_link";
 
-// place_location[0].pre_place_approach.direction.vector.x = 1;
-//   place_location[0].pre_place_approach.direction.vector.x = 1;
-//   place_location[0].pre_place_approach.direction.vector.y = pre_vec[1];
-// 不同的
+    // place_location[0].pre_place_approach.direction.vector.x = 1;
+    //   place_location[0].pre_place_approach.direction.vector.x = 1;
+    //   place_location[0].pre_place_approach.direction.vector.y = pre_vec[1];
+    // 不同的
     if(intent == 0)
     {
         place_location[0].pre_place_approach.direction.vector.y = -1; 
@@ -152,20 +154,21 @@ void PickPlaceBridge::place(geometry_msgs::Pose pose, float pre_vec[], float bac
         place_location[0].pre_place_approach.direction.vector.z = -1; 
         place_location[0].post_place_retreat.direction.vector.z = 1;
     }  
-  place_location[0].pre_place_approach.min_distance = 0.095;
-  place_location[0].pre_place_approach.desired_distance = 0.115;
-  // 撤退方向
-  place_location[0].post_place_retreat.direction.header.frame_id = "base_link";
-//   place_location[0].post_place_retreat.direction.vector.x = back_vec[0];
-//   place_location[0].post_place_retreat.direction.vector.y = back_vec[1];
+    place_location[0].pre_place_approach.min_distance = 0.05;
+    place_location[0].pre_place_approach.desired_distance = 0.115;
+    // 撤退方向
+    place_location[0].post_place_retreat.direction.header.frame_id = "base_link";
+    //   place_location[0].post_place_retreat.direction.vector.x = back_vec[0];
+    //   place_location[0].post_place_retreat.direction.vector.y = back_vec[1];
 
         
-  place_location[0].post_place_retreat.min_distance = 0.1;
-  place_location[0].post_place_retreat.desired_distance = 0.25;
-  // 模拟打开夹爪
-  openGripper(place_location[0].post_place_posture);
-  // 抓取动作
-  move_group.place("object", place_location);
+    place_location[0].post_place_retreat.min_distance = 0.05;
+    place_location[0].post_place_retreat.desired_distance = 0.115;
+    // 模拟打开夹爪
+    openGripper(place_location[0].post_place_posture);
+    // 抓取动作
+
+    return move_group.place("object", place_location);
 }
 
 bool PickPlaceBridge::setGenActuator()
@@ -260,7 +263,15 @@ void PickPlaceBridge::CartesianPath(geometry_msgs::Pose pose)
 
     // 警告 - 在操作实际硬件时禁用跳转阈值可能会
     // 导致冗余接头的大量不可预知运动，并且可能是一个安全问题
-    // move_group.setStartStateToCurrentState();
+    bool velocity = false;
+    nh.getParam("/velocity", velocity);
+    if(velocity == true)
+    {
+        move_group.setMaxVelocityScalingFactor(0.01);
+        ROS_INFO("set velocityScalingFactor 0.01");
+    }
+    else
+        move_group.setMaxVelocityScalingFactor(1);
     moveit_msgs::RobotTrajectory trajectory;
     double jump_threshold = 0.0;
     double eef_step = 0.02;
@@ -286,7 +297,22 @@ void PickPlaceBridge::CartesianPath(geometry_msgs::Pose pose)
 void PickPlaceBridge::objectCallback(const hirop_msgs::ObjectArray::ConstPtr& msg)
 {
     geometry_msgs::Pose pose;
+    nh.getParam("/intent", intent);
+    nh.getParam("/target", target);
     int i = msg->objects.size();
+    static int cnt = 0;
+    static int errorCnt = 0;
+    bool velocity = false;
+    nh.getParam("/velocity", velocity);
+    if(velocity == true)
+    {
+        move_group.setMaxVelocityScalingFactor(0.01);
+        ROS_INFO("set velocityScalingFactor 0.01");
+    }
+    else
+        move_group.setMaxVelocityScalingFactor(1);
+    cnt++;
+    nh.setParam("/cnt", cnt);
     for(int j = 0; j < i; ++j)
     {   
         pose = msg->objects[0].pose.pose;
@@ -296,7 +322,7 @@ void PickPlaceBridge::objectCallback(const hirop_msgs::ObjectArray::ConstPtr& ms
         float pick_back_vec[3] = {0};
         float place_pre_vec[3] = {0};
         float place_back_vec[3] = {0};
-        nh.getParam("/pick_place/intent", intent);
+
         if(intent == 0)
         {
             pick_pre_vec[0] = 1;   
@@ -317,14 +343,16 @@ void PickPlaceBridge::objectCallback(const hirop_msgs::ObjectArray::ConstPtr& ms
         }
             
         pick(pose, pick_pre_vec, pick_back_vec);
-        
         ros::WallDuration(1.0).sleep();
         // 测试
-        nh.getParam("/pick_place/target", target);
-        place(place_poses[target], place_pre_vec, place_back_vec);
-
+        moveit_msgs::MoveItErrorCodes code;
+        code = place(place_poses[target], place_pre_vec, place_back_vec);
+        if(code.val != moveit_msgs::MoveItErrorCodes::SUCCESS)
+            errorCnt ++;
+        nh.setParam("error_cnt", errorCnt);
         move_group.setNamedTarget("home");
         move_group.move();
+        nh.setParam("/over", true);
     }
 }
 

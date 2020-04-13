@@ -42,8 +42,8 @@ public:
 private:
     void openGripper(trajectory_msgs::JointTrajectory& posture);
     void closedGripper(trajectory_msgs::JointTrajectory& posture);
-    void pick(geometry_msgs::Pose pose, float pre_vec[], float back_vec[]);
-    void place(geometry_msgs::Pose pose, float pre_vec[], float back_vec[]);
+    moveit_msgs::MoveItErrorCodes pick(geometry_msgs::Pose pose, float pre_vec[], float back_vec[]);
+    moveit_msgs::MoveItErrorCodes place(geometry_msgs::Pose pose, float pre_vec[], float back_vec[]);
     bool setGenActuator();
     void rmObject();
     void showObject(geometry_msgs::Pose pose);
