@@ -330,6 +330,7 @@ void PickPlaceBridge::objectCallback(const hirop_msgs::ObjectArray::ConstPtr& ms
 
 void PickPlaceBridge::subCallback(const std_msgs::Bool::ConstPtr& msg)
 {
+    static bool flag = false;
 	if(flag != msg->data)
 	{
 		if(msg->data)

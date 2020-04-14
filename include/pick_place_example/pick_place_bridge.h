@@ -9,6 +9,7 @@
 #include <geometry_msgs/Pose.h>
 
 #include <pluginlib/class_loader.h>
+#include <std_msgs/Bool.h>
 
 // MoveIt!
 // #include <moveit/robot_model_loader/robot_model_loader.h>
@@ -51,7 +52,7 @@ private:
     void actionDataCallback(const std_msgs::Int32MultiArray::ConstPtr &msg);
     void CartesianPath(geometry_msgs::Pose pose);
     // 行人检测
-    void subCallback(const std_msgs::Bool::ConstPtr& msg);
+    void subCallback(const std_msgs::Bool::ConstPtr &msg);
 
 
     ros::NodeHandle& nh;
