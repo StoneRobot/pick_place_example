@@ -6,6 +6,7 @@
     <param name="cnt" type="int" value="0" />
     <param name="error_cnt" type="int" value="0" />
     <param name="velocity" type="bool" value="false" />
+    
     <node pkg="pick_place_example" type="pick_place" name="pick_place" output="screen">
         <param name="group" type="str" value="arm" />
     </node>

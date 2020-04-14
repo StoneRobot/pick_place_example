@@ -1,5 +1,5 @@
-rosparam set /pick_place/intent 0
-rosparam set /pick_place/target 0
+rosparam set /intent 0
+rosparam set /target 0
 rostopic pub /object_array hirop_msgs/ObjectArray "header:
   seq: 0
   stamp:
