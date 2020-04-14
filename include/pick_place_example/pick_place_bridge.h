@@ -50,6 +50,8 @@ private:
     void objectCallback(const hirop_msgs::ObjectArray::ConstPtr& msg);
     void actionDataCallback(const std_msgs::Int32MultiArray::ConstPtr &msg);
     void CartesianPath(geometry_msgs::Pose pose);
+    // 行人检测
+    void subCallback(const std_msgs::Bool::ConstPtr& msg);
 
 
     ros::NodeHandle& nh;
@@ -65,6 +67,8 @@ private:
     ros::Publisher place_pose_pub;
     ros::Subscriber pose_sub;
     ros::Subscriber action_sub;
+    // 行人检测
+    ros::Subscriber detetor_sub;
     int intent;
     int object;
     int target;

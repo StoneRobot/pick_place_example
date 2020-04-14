@@ -19,6 +19,8 @@ move_group{group}
 
     detection_client = nh.serviceClient<hirop_msgs::detection>("detection");
 
+    // 
+    detetor_sub = nh.subscribe("pedestrian_detection", 1, &PickPlaceBridge::subCallback, this);
     move_group.setMaxAccelerationScalingFactor(0.5);
 
     setGenActuator();
@@ -324,5 +326,24 @@ void PickPlaceBridge::objectCallback(const hirop_msgs::ObjectArray::ConstPtr& ms
         move_group.move();
         nh.setParam("over", true);
     }
+}
+
+void PickPlaceBridge::subCallback(const std_msgs::Bool::ConstPtr& msg)
+{
+	if(flag != msg->data)
+	{
+		if(msg->data)
+		{
+			ROS_INFO("slow down ...");
+			move_group.setMaxVelocityScalingFactor(0.1);
+			move_group.setMaxAccelerationScalingFactor(0.1);
+		}
+		else
+		{
+			ROS_INFO("normal speed");
+			move_group.setMaxVelocityScalingFactor(1);
+			// move_group.setMaxAccelerationScalingFactor(1);
+		}
+	}
 }
 
