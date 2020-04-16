@@ -7,21 +7,23 @@ add_compile_options(-std=c++11)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-    rospy
-    roscpp
-    std_msgs
-    hirop_msgs
-    interactive_markers
-    moveit_core
-    moveit_ros_planning
-    moveit_ros_planning_interface
-    pluginlib
-    geometric_shapes
-    rosbag
-    tf2_ros
-    tf2_eigen
-    tf2_geometry_msgs
+find_package(catkin REQUIRED COMPONENTS 
+rospy 
+roscpp 
+std_msgs 
+hirop_msgs 
+interactive_markers 
+moveit_msgs 
+moveit_core 
+moveit_ros_planning 
+moveit_ros_planning_interface 
+pluginlib 
+geometric_shapes 
+rosbag 
+tf2_ros 
+tf2_eigen 
+tf2_geometry_msgs 
+actionlib
 )
 
 ## System dependencies are found with CMake's conventions
@@ -235,6 +237,8 @@ target_link_libraries(gripper_controller
 )
 
 add_executable(pick_place
+  include/pick_place_example/resetPickPlace.h
+  src/resetPickPlace.cpp
   include/pick_place_example/pick_place_bridge.h
   src/pick_place_bridge.cpp
   src/main.cpp

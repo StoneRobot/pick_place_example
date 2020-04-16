@@ -32,22 +32,12 @@ poses.append(pose)
 pose = setPose(0.85, 0, 0.25, 0, 0, 0, 1)
 poses.append(pose)
 
-# object.pose.header.frame_id = "base_link"
-# object.pose.pose.position.x = 0.418
-# object.pose.pose.position.y = -0.65
-# object.pose.pose.position.z = 0.66
-# object.pose.pose.orientation.x = 0
-# object.pose.pose.orientation.y = 0
-# object.pose.pose.orientation.z = -0.706825
-# object.pose.pose.orientation.w = 0.707388
-# pose.objects.append(object)
-
 rospy.set_param("/intent", 1)
 rospy.set_param("/target", 2)
-print pose
+print(pose)
 cnt = 0
 error_cnt = 0
-while True:
+while not rospy.is_shutdown():
     flag = rospy.get_param("/over", False)
     if flag ==  True:
         pub.publish(poses[0])

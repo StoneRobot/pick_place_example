@@ -22,6 +22,7 @@ move_group{group}
     // 
     detetor_sub = nh.subscribe("pedestrian_detection", 1, &PickPlaceBridge::subCallback, this);
     move_group.setMaxAccelerationScalingFactor(0.5);
+    move_group.setMaxVelocityScalingFactor(0.8);
 
     setGenActuator();
 
@@ -113,9 +114,7 @@ moveit_msgs::MoveItErrorCodes PickPlaceBridge::pick(geometry_msgs::Pose pose)
     openGripper(grasps[0].pre_grasp_posture);
     closedGripper(grasps[0].grasp_posture);
     // 动作
-    move_group.pick("object", grasps);
-    move_group.plan(my_plan);
-    return move_group.move();
+    return move_group.pick("object", grasps);
 }
 
 moveit_msgs::MoveItErrorCodes PickPlaceBridge::place(geometry_msgs::Pose pose)
@@ -157,9 +156,7 @@ moveit_msgs::MoveItErrorCodes PickPlaceBridge::place(geometry_msgs::Pose pose)
     // 模拟打开夹爪
     openGripper(place_location[0].post_place_posture);
     // 抓取动作
-    move_group.place("object", place_location);
-    move_group.plan(my_plan);
-    return move_group.move();
+    return move_group.place("object", place_location);
 }
 
 bool PickPlaceBridge::setGenActuator()
@@ -259,16 +256,13 @@ void PickPlaceBridge::CartesianPath(geometry_msgs::Pose pose)
 
     double fraction = 0;
     int cnt = 0;
-
+    
     while (fraction < 1.0 && cnt < 100)
     {
         fraction = move_group.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
         cnt ++;
     }
     ROS_INFO_STREAM( "waypoints "<<waypoints.size()<<" "<<fraction);
-    // my_plan.trajectory_ = trajectory;
-    // 运动
-    // move_group.execute(my_plan);
     move_group.plan(my_plan);
     move_group.move();
 }
@@ -279,26 +273,18 @@ void PickPlaceBridge::objectCallback(const hirop_msgs::ObjectArray::ConstPtr& ms
     geometry_msgs::Pose pose;
     nh.getParam("intent", intent);
     nh.getParam("target", target);
-    ROS_INFO_STREAM("intent: "<< intent << "target: " << target);
+    // ROS_INFO_STREAM("intent: "<< intent << "target: " << target);
     int i = msg->objects.size();
     static int cnt = 0;
     static int errorCnt = 0;
-    bool velocity = false;
-    nh.getParam("/velocity", velocity);
-    if(velocity == true)
-    {
-        move_group.setMaxVelocityScalingFactor(0.2);
-        ROS_INFO("set velocityScalingFactor 0.2");
-    }
-    else
-        move_group.setMaxVelocityScalingFactor(0.8);
     cnt++;
     nh.setParam("/cnt", cnt);
     for(int j = 0; j < i; ++j)
     {   
+        ROS_INFO("Press 'enter' to continue");
+        std::cin.ignore();
         moveit_msgs::MoveItErrorCodes code;
         pose = msg->objects[0].pose.pose;
-
         rmObject();
         showObject(pose);
         if(intent == 0)
@@ -328,22 +314,22 @@ void PickPlaceBridge::objectCallback(const hirop_msgs::ObjectArray::ConstPtr& ms
     }
 }
 
+
 void PickPlaceBridge::subCallback(const std_msgs::Bool::ConstPtr& msg)
 {
     static bool flag = false;
 	if(flag != msg->data)
 	{
+        flag = msg->data;
 		if(msg->data)
 		{
 			ROS_INFO("slow down ...");
-			move_group.setMaxVelocityScalingFactor(0.1);
-			move_group.setMaxAccelerationScalingFactor(0.1);
+			move_group.setMaxVelocityScalingFactor(0.2);
 		}
 		else
 		{
 			ROS_INFO("normal speed");
-			move_group.setMaxVelocityScalingFactor(1);
-			// move_group.setMaxAccelerationScalingFactor(1);
+			move_group.setMaxVelocityScalingFactor(0.8);
 		}
 	}
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include <ros/ros.h>
 #include <std_msgs/Int32MultiArray.h>
-
+ 
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 #include <moveit/move_group_interface/move_group_interface.h>
 
@@ -10,6 +10,9 @@
 
 #include <pluginlib/class_loader.h>
 #include <std_msgs/Bool.h>
+
+
+
 
 // MoveIt!
 // #include <moveit/robot_model_loader/robot_model_loader.h>
@@ -32,6 +35,7 @@
 #include "hirop_msgs/SetGenActuator.h"
 #include "hirop_msgs/ObjectArray.h"
 #include "hirop_msgs/detection.h"
+#include <iostream>
 
 class PickPlaceBridge
 {
@@ -53,7 +57,6 @@ private:
     void CartesianPath(geometry_msgs::Pose pose);
     // 行人检测
     void subCallback(const std_msgs::Bool::ConstPtr &msg);
-
 
     ros::NodeHandle& nh;
     moveit::planning_interface::MoveGroupInterface& move_group;
@@ -78,5 +81,6 @@ private:
     geometry_msgs::Pose place_pose3;
     std::vector<geometry_msgs::Pose> place_poses;
 
+    
 
 };
