@@ -10,7 +10,7 @@
     <param name="error_cnt" type="int" value="0" />
     <!--测试减速标志位-->
     <param name="velocity" type="bool" value="false" />
-    <param name="is_use_detection" type="bool" value="false" />
+    <param name="is_use_detection" type="bool" value="true" />
     
     <node pkg="pick_place_example" type="pick_place" name="pick_place" output="screen">
         <param name="group" type="str" value="arm" />
