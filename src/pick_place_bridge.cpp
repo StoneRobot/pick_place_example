@@ -21,8 +21,10 @@ move_group{group}
 
     // 
     detetor_sub = nh.subscribe("pedestrian_detection", 1, &PickPlaceBridge::subCallback, this);
+
     move_group.setMaxAccelerationScalingFactor(0.5);
     move_group.setMaxVelocityScalingFactor(0.8);
+
 
     setGenActuator();
 
@@ -42,7 +44,7 @@ move_group{group}
 
     place_pose3.position.x = 0.78;
     place_pose3.position.y = 0;
-    place_pose3.position.z = 0.25;
+    place_pose3.position.z = 0.20;
     orien.setRPY(0, 0, 6.28);
     place_pose3.orientation = tf2::toMsg(orien);
 
@@ -114,7 +116,9 @@ moveit_msgs::MoveItErrorCodes PickPlaceBridge::pick(geometry_msgs::Pose pose)
     openGripper(grasps[0].pre_grasp_posture);
     closedGripper(grasps[0].grasp_posture);
     // 动作
+
     return move_group.pick("object", grasps);
+
 }
 
 moveit_msgs::MoveItErrorCodes PickPlaceBridge::place(geometry_msgs::Pose pose)
@@ -143,7 +147,7 @@ moveit_msgs::MoveItErrorCodes PickPlaceBridge::place(geometry_msgs::Pose pose)
     }
     else if(intent == 1)
     {
-        place_location[0].pre_place_approach.direction.vector.z = -1; 
+        place_location[0].pre_place_approach.direction.vector.x = 1; 
         place_location[0].post_place_retreat.direction.vector.z = 1;
     }  
     place_location[0].pre_place_approach.direction.header.frame_id = "base_link";
@@ -156,7 +160,9 @@ moveit_msgs::MoveItErrorCodes PickPlaceBridge::place(geometry_msgs::Pose pose)
     // 模拟打开夹爪
     openGripper(place_location[0].post_place_posture);
     // 抓取动作
+
     return move_group.place("object", place_location);
+
 }
 
 bool PickPlaceBridge::setGenActuator()
@@ -177,7 +183,6 @@ bool PickPlaceBridge::setGenActuator()
 void PickPlaceBridge::showObject(geometry_msgs::Pose pose)
 {
     hirop_msgs::ShowObject srv;
-
     srv.request.objPose.header.frame_id = "base_link";
     srv.request.objPose.pose.position.x = pose.position.x;
     srv.request.objPose.pose.position.y = pose.position.y;
@@ -289,12 +294,12 @@ void PickPlaceBridge::objectCallback(const hirop_msgs::ObjectArray::ConstPtr& ms
         showObject(pose);
         if(intent == 0)
         {
-            ROS_INFO_STREAM("intent" << intent);
+            ROS_INFO_STREAM("intent:" << intent);
             this->CartesianPath(pose);
         }
         else if(intent == 1)
         {
-            ROS_INFO_STREAM("intent" << intent);
+            ROS_INFO_STREAM("intent:" << intent);
             tf2::Quaternion orientation;
             orientation.setRPY(0, 0, -1.57);
             pose.orientation = tf2::toMsg(orientation);
